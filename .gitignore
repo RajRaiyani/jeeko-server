@@ -17,6 +17,6 @@ meta.json
 /whatsapp_cache
 /.wwebjs_cache
 /files
-
+/commands
 
 FCM.json

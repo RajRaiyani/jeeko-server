@@ -21,6 +21,7 @@ export const ValidationSchema = {
       .optional(),
     tags: z.array(z.string()).max(20, 'Maximum 20 tags allowed').default([]),
     metadata: z.object({}).default({}),
+    points: z.array(z.string().trim().max(70, 'Points must be less than 70 characters')).default([]),
     sale_price: z
       .number()
       .int()
@@ -44,6 +45,7 @@ export async function Controller(
     metadata,
     sale_price,
     image_id,
+    points,
   } = req.body as z.infer<typeof ValidationSchema.body>;
 
   try {
@@ -92,8 +94,9 @@ export async function Controller(
         tags = $4,
         metadata = $5,
         sale_price = $6,
+        points = $7,
         updated_at = now()
-      WHERE id = $7
+      WHERE id = $8
        RETURNING *`,
       [
         category_id,
@@ -102,6 +105,7 @@ export async function Controller(
         tags || [],
         metadata || {},
         sale_price,
+        points || [],
         id,
       ],
     );

@@ -18,6 +18,7 @@ export const ValidationSchema = {
       .optional(),
     tags: z.array(z.string()).max(20, 'Maximum 20 tags allowed').default([]),
     metadata: z.object({}).default({}),
+    points: z.array(z.string().trim().max(70, 'Points must be less than 70 characters')).default([]),
     sale_price: z
       .number()
       .int()
@@ -40,6 +41,7 @@ export async function Controller(
     metadata,
     sale_price,
     image_id,
+    points,
   } = req.body as z.infer<typeof ValidationSchema.body>;
 
   // Check if category exists
@@ -69,8 +71,8 @@ export async function Controller(
 
     // Create product
     const newProduct = await db.queryOne(
-      `INSERT INTO products (category_id, name, description, tags, metadata, sale_price)
-      VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
+      `INSERT INTO products (category_id, name, description, tags, metadata, sale_price, points)
+      VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
       [
         category_id,
         name,
@@ -78,6 +80,7 @@ export async function Controller(
         tags || [],
         metadata || {},
         sale_price,
+        points || [],
       ],
     );
 

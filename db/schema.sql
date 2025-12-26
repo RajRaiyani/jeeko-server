@@ -1,4 +1,4 @@
-\restrict kynXACvIlSdTHGVf5b0e414Lmjl3F1ujmBdIymhxM1i9D1FcjIxeweLpo22g1wp
+\restrict fTLGtYfB30HhwFp4jzOoCdERZ2pobDG0Uy6vX1GSYBeiF1Fi6nULLGanxOsjAOd
 
 -- Dumped from database version 17.6 (Postgres.app)
 -- Dumped by pg_dump version 17.6 (Homebrew)
@@ -86,7 +86,8 @@ CREATE TABLE public.products (
     sale_price integer NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     updated_at timestamp with time zone,
-    sale_price_in_rupees numeric(12,2) GENERATED ALWAYS AS (round(((sale_price / 100))::numeric, 2)) STORED
+    sale_price_in_rupees numeric(12,2) GENERATED ALWAYS AS (round(((sale_price / 100))::numeric, 2)) STORED,
+    points text[] DEFAULT '{}'::text[] NOT NULL
 );
 
 
@@ -231,7 +232,7 @@ ALTER TABLE ONLY public.products
 -- PostgreSQL database dump complete
 --
 
-\unrestrict kynXACvIlSdTHGVf5b0e414Lmjl3F1ujmBdIymhxM1i9D1FcjIxeweLpo22g1wp
+\unrestrict fTLGtYfB30HhwFp4jzOoCdERZ2pobDG0Uy6vX1GSYBeiF1Fi6nULLGanxOsjAOd
 
 
 --
@@ -244,4 +245,5 @@ INSERT INTO public.schema_migrations (version) VALUES
     ('20251223140415'),
     ('20251223195422'),
     ('20251224135625'),
-    ('20251225062504');
+    ('20251225062504'),
+    ('20251226041753');
