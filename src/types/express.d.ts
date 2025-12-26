@@ -1,12 +1,11 @@
-// src/types/express.d.ts
-import AuthUser from '@/components/user/authUser.class';
+// src/types/express.d.ts';
 
 declare global {
   namespace Express {
     interface Request {
       validatedQuery?: any;
       id?: string;
-      user?: AuthUser;
+      user?: { id: string, is_admin: boolean };
       customer?: {
         id: string;
       };
