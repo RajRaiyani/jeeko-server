@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { DatabaseClient } from '@/service/database/index.js';
+import constant from '@/config/constant.js';
 import { z } from 'zod';
 import env from '@/config/env.js';
 
@@ -13,6 +14,7 @@ export const ValidationSchema = {
       .pipe(z.number().int().min(0, 'Offset must be greater than 0')),
     limit: z.string().default('30').transform(val => parseInt(val, 10))
       .pipe(z.number().int().min(1, 'Limit must be greater than 0').max(100, 'Limit must be less than 100')),
+    brand: z.enum(constant.productBrands).optional(),
   }),
 };
 
@@ -23,7 +25,7 @@ export async function Controller(
   db: DatabaseClient,
 ) {
   try {
-    const { category_id, search, offset, limit } = req.validatedQuery as z.infer<typeof ValidationSchema.query>;
+    const { category_id, search, offset, limit, brand } = req.validatedQuery as z.infer<typeof ValidationSchema.query>;
 
 
     // Build WHERE conditions
@@ -32,6 +34,8 @@ export async function Controller(
     if (category_id) whereClause += ` AND p.category_id = $category_id`;
 
     if (search) whereClause += ` AND (p.name ILIKE LOWER($search)) `;
+
+    if (brand) whereClause += ` AND p.brand = $brand`;
 
 
     const listQuery = `
@@ -47,6 +51,7 @@ export async function Controller(
         p.created_at,
         p.updated_at,
         p.points,
+        p.brand,
         json_build_object(
           'id', pc.id,
           'name', pc.name,
@@ -82,6 +87,7 @@ export async function Controller(
       offset,
       category_id,
       search: search ? `%${search}%` : null,
+      brand,
     });
 
     return res.status(200).json(data);

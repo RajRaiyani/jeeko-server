@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { DatabaseClient } from '@/service/database/index.js';
+import constant from '@/config/constant.js';
 import { z } from 'zod';
 
 export const ValidationSchema = {
@@ -24,6 +25,7 @@ export const ValidationSchema = {
       .int()
       .min(0, 'Sale price must be greater than or equal to 0').transform(val => Math.round(val*100)),
     image_id: z.uuid({ version: 'v4', message: 'Invalid image ID' }),
+    brand: z.enum(constant.productBrands).default('jeeko'),
   }),
 };
 
@@ -42,6 +44,7 @@ export async function Controller(
     sale_price,
     image_id,
     points,
+    brand,
   } = req.body as z.infer<typeof ValidationSchema.body>;
 
   // Check if category exists
@@ -71,8 +74,8 @@ export async function Controller(
 
     // Create product
     const newProduct = await db.queryOne(
-      `INSERT INTO products (category_id, name, description, tags, metadata, sale_price, points)
-      VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
+      `INSERT INTO products (category_id, name, description, tags, metadata, sale_price, points, brand)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
       [
         category_id,
         name,
@@ -81,6 +84,7 @@ export async function Controller(
         metadata || {},
         sale_price,
         points || [],
+        brand,
       ],
     );
 

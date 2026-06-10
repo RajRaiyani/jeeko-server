@@ -1,7 +1,7 @@
-\restrict fTLGtYfB30HhwFp4jzOoCdERZ2pobDG0Uy6vX1GSYBeiF1Fi6nULLGanxOsjAOd
+\restrict eTLaoOX2ZoIgpAMm8BjTmm6utc6DJovMFGzX19UsxBCOx3fsl75LLfXdbkr0hfK
 
--- Dumped from database version 17.6 (Postgres.app)
--- Dumped by pg_dump version 17.6 (Homebrew)
+-- Dumped from database version 18.3 (Debian 18.3-1.pgdg13+1)
+-- Dumped by pg_dump version 18.3
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -87,7 +87,9 @@ CREATE TABLE public.products (
     created_at timestamp with time zone DEFAULT now() NOT NULL,
     updated_at timestamp with time zone,
     sale_price_in_rupees numeric(12,2) GENERATED ALWAYS AS (round(((sale_price / 100))::numeric, 2)) STORED,
-    points text[] DEFAULT '{}'::text[] NOT NULL
+    points text[] DEFAULT '{}'::text[] NOT NULL,
+    brand character varying(50) DEFAULT 'jeeko'::character varying NOT NULL,
+    CONSTRAINT ck_products_brand CHECK (((brand)::text = ANY ((ARRAY['jeeko'::character varying, 'kishan king'::character varying])::text[])))
 );
 
 
@@ -232,7 +234,7 @@ ALTER TABLE ONLY public.products
 -- PostgreSQL database dump complete
 --
 
-\unrestrict fTLGtYfB30HhwFp4jzOoCdERZ2pobDG0Uy6vX1GSYBeiF1Fi6nULLGanxOsjAOd
+\unrestrict eTLaoOX2ZoIgpAMm8BjTmm6utc6DJovMFGzX19UsxBCOx3fsl75LLfXdbkr0hfK
 
 
 --
@@ -246,4 +248,5 @@ INSERT INTO public.schema_migrations (version) VALUES
     ('20251223195422'),
     ('20251224135625'),
     ('20251225062504'),
-    ('20251226041753');
+    ('20251226041753'),
+    ('20260610120000');

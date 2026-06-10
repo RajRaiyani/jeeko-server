@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { DatabaseClient } from '@/service/database/index.js';
+import constant from '@/config/constant.js';
 import { z } from 'zod';
 
 export const ValidationSchema = {
@@ -27,6 +28,7 @@ export const ValidationSchema = {
       .int()
       .min(0, 'Sale price must be greater than or equal to 0').transform(val => Math.round(val*100)),
     image_id: z.uuid({ version: 'v4', message: 'Invalid image ID' }),
+    brand: z.enum(constant.productBrands).default('jeeko'),
   }),
 };
 
@@ -46,6 +48,7 @@ export async function Controller(
     sale_price,
     image_id,
     points,
+    brand,
   } = req.body as z.infer<typeof ValidationSchema.body>;
 
   try {
@@ -95,8 +98,9 @@ export async function Controller(
         metadata = $5,
         sale_price = $6,
         points = $7,
+        brand = $8,
         updated_at = now()
-      WHERE id = $8
+      WHERE id = $9
        RETURNING *`,
       [
         category_id,
@@ -106,6 +110,7 @@ export async function Controller(
         metadata || {},
         sale_price,
         points || [],
+        brand,
         id,
       ],
     );

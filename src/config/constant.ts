@@ -322,6 +322,8 @@ export default {
 
   pumpBrands: ['Kirloskar', 'Lubi'],
 
+  productBrands: ['jeeko', 'kishan king'] as const,
+
   customerAlertOperators: ['>', '<', '=', '>=', '<=', '!='] as const,
   userAlertOperators: ['>', '<', '=', '>=', '<=', '!='] as const,
 };
